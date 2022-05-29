@@ -131,10 +131,10 @@ void TrainingSet::initEntropy(){//only add first line big bad
 }
 
 
-void TrainingSet::initAgregaCol(){//not working properly ? TODO
+void TrainingSet::initAgregaCol(){//not working properly ?
 	for(auto k : mEntropyCol){//for each col
 		for(Attribut * l : *k->mCol){
-			std::cout << "[INIT AG] adding " << l->getName() <<"\n";
+			std::cout << "[INIT AG] adding " << l->getValue() <<"\n";
 			mAgregaCol.add(l);
 		}
 	}
@@ -154,46 +154,46 @@ Attribut * TrainingSet::getAttrFromAgrega(std::string str){//line from agrega co
 	return NULL;//monkaOMEGA bet im gonna regret that later
 }
 
-
+//TODO issue here
 void TrainingSet::AgregaCol::add(Attribut * a){//wtf is that
-	std::cout << "[ADD] name " << a->getName() <<"\n";
+	std::cout << "[ADD] name " << a->getValue() <<"\n";
 
-	if(getAttrFromAgrega(a->getName()) == NULL){ //if not present
-		std::cout << "  [ADD] adding " << a->getName() <<"\n";
+	if(getAttrFromAgrega(a->getValue()) == NULL){ //if not present
+		std::cout << "  [ADD] adding " << a->getValue() <<"\n";
 
 		if(mCol == NULL){ //be careful of null
 			std::cout << "  [ADD] NEW COL " << "\n";
 			mCol = new std::vector<LineAgreaCol *> {
-				new LineAgreaCol{1, a->getName(), new std::vector<Attribut *>{a}}
+				new LineAgreaCol{1, a->getValue(), new std::vector<Attribut *>{a}}
 			};//if none add first col
-
 			return; // break
 		}
 
-		for(auto * k : *mCol){//all cols shall allready be init
+		for(auto * k : *mCol){//all cols shall already be init
 			for(auto * l : *k->mLine){
-				if(k->mName == a->getName()){ //if belong col AND is not in
+				if(k->mName == a->getValue()){ //if belong col AND is not in
 					return k->mLine->push_back(a);//push and git out
 				}
 			}
 		}//if not returned yet, create new col and push it in
 		mCol->push_back(
-				new LineAgreaCol{1, a->getName(), new std::vector<Attribut *>{a}}
+				new LineAgreaCol{1, a->getValue(), new std::vector<Attribut *>{a}}
 			);
 		//triggered in init
 	}
 
 	else {//if exists then incr
-		std::cout << "[ADD] INCR " << a->getName() << "\n";
-		incrByAttribut(a);
+		incrByAttribut(a);//git gud well done EZ Clap
 	}
 }
 
 
-void TrainingSet::incrByAttribut(std::string str){//wtf wrong name
+void TrainingSet::incrByAttribut(std::string str){//wtf wrong name AND useless
 	std::cout << "[INCR] AYOOO ?\n";
-	if(!mAgregaCol.mCol || mAgregaCol.mCol == NULL)
-		std::cout << "  [INCR] FUCK"; return;
+	if(!mAgregaCol.mCol || mAgregaCol.mCol == NULL){
+		std::cout << "  [INCR] FUCK"; 
+		exit(-1);
+	}
 
 	for(auto * col : *mAgregaCol.mCol){
 		for(Attribut * l :  *col->mLine){
@@ -204,27 +204,33 @@ void TrainingSet::incrByAttribut(std::string str){//wtf wrong name
 			}
 		}
 	}
-}
+}//should delete this one
 
 
 void TrainingSet::incrByAttribut(Attribut * a){//same as other 
-	std::cout << "[INCR] Hello ?\n";
-	if(!mAgregaCol.mCol || mAgregaCol.mCol == NULL)
-		std::cout << "  [INCR] FUCK"; return;
+
+	std::cout << "[INCR] " << a->getValue() << "\n";
+	if(!mAgregaCol.mCol || mAgregaCol.mCol == NULL){
+		std::cout << "  [INCR] FUCK";
+		return;
+	}
 
 	for(auto * col : *mAgregaCol.mCol){
 		for(Attribut * l :  *col->mLine){
 			if(l->getName() == a->getName()){//only diff
 				col->mNbOccurence++;
-				std::cout << "  [ADD] INCR " << l->getName() << " TO " 
+				std::cout << "  [ADD] INCR " << l->getName() << " TO "
 					<< col->mNbOccurence << "\n";
+				return;
 			}
 		}
 	}
+	std::cout <<"  [ADD] wtf is happening here\n";
+	exit(-1);
 }
 
 
-void TrainingSet::AgregaCol::print(){
+void TrainingSet::AgregaCol::print(){//useless = yes
 	for(auto * k : *mAgregaCol.mCol){
 		k->print();
 		std::cout << std::endl;
@@ -237,13 +243,15 @@ TrainingSet::AgregaCol * TrainingSet::getAgreCol(){
 }
 
 
-void TrainingSet::LineAgreaCol::print(){
+void TrainingSet::LineAgreaCol::print(){//prob useless
+	std::cout << "[PRITN LINE] size line : " << mLine->size() << " ";
 	for(auto * k : *mLine){
-		std::cout << k->getValue();
+		std::cout << k->getValue() << " ";
 	}
 }
 
-void TrainingSet::printEn(){
+
+void TrainingSet::printEn(){//def useless
 	for(auto * k : mEntropyCol){
 		for(auto * l : *k->mCol){
 			std::cout << "[EN] name : " <<  l->getName() 
@@ -252,7 +260,8 @@ void TrainingSet::printEn(){
 	}
 }
 
-bool TrainingSet::isIn(std::vector<Column *> * a, Attribut * val){
+
+bool TrainingSet::isIn(std::vector<Column *> * a, Attribut * val){//shit but works
 	for(auto *k : *a){
 		for(auto *l : *k->mCol){
 			if(l->getValue() == val->getValue())
@@ -260,4 +269,4 @@ bool TrainingSet::isIn(std::vector<Column *> * a, Attribut * val){
 		}
 	}
 	return false;
-}//kill me already
+}//also std::find is a thing, but aweful to use with ob

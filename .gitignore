@@ -4,4 +4,5 @@ Debug/
 data/
 cmake_install.cmake
 yaideaig
-
+.~*
+Makefile

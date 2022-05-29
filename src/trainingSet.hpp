@@ -45,7 +45,7 @@ class TrainingSet{
 		static void incrByAttribut(Attribut *);
 		void computeEntropy();
 
-		bool isIn(std::vector<Column *> *, Attribut *);
+		static bool isIn(std::vector<Column *> *, Attribut *);
 
 	public:
 		TrainingSet();
@@ -62,6 +62,4 @@ class TrainingSet{
 		void printEn();
 
 };
-
-
 #endif
